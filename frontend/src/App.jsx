@@ -1,12 +1,10 @@
-import React from "react";
-import { Button } from "./components/ui/button";
 import Navbar from "./components/Navbar";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
 import Verify from "./pages/Verify.jsx";
-import VerifyEmail from "./pages/Verify.jsx";
+import VerifyEmail from "./pages/VerifyEmail.jsx";
 const router = createBrowserRouter([
   {
     path: "/",

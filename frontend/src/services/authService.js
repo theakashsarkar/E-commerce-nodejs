@@ -1,16 +1,29 @@
-const BASE_URL = "http://localhost:8000/api/v1/user";
-
+import { apiRequest } from "./apiClient";
 export const registerUser = async (formData) => {
-  const response = await fetch(`${BASE_URL}/register`, {
+  return apiRequest("/register", {
     method: "POST",
-    headers: {
-      "Content-type": "application/json",
-    },
     body: JSON.stringify(formData),
   });
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.message || "something want wrong");
-  }
-  return data;
+};
+export const loginUser = async (formData) => {
+  return apiRequest("/login", {
+    method: "POST",
+    body: JSON.stringify(formData),
+  });
+};
+export const logoutUser = async ($accesToken) => {
+  return apiRequest("/logout", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${$accesToken}`,
+    },
+  });
+};
+export const verifyEmail = async (token) => {
+  return apiRequest("/verify", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };

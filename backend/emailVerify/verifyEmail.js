@@ -10,12 +10,6 @@ export const verifyEmail = (token, email) => {
     },
   });
 
-  // const mailConfigurations = {
-  //   from: process.env.EMAIL_USERNAME,
-  //   to: email,
-  //   subject: "email verification",
-  //   text: `Click the link below to verify your email: ${process.env.FRONTEND_URL}/verify-email/${token}`,
-  // };
   const mailConfigurations = {
     from: `"Your App Name" <${process.env.EMAIL_USERNAME}>`, // Professional sender formatting
     to: email,
@@ -27,7 +21,7 @@ export const verifyEmail = (token, email) => {
             <h2 style="color: #0f172a;">Welcome to Our Platform!</h2>
             <p style="color: #334155; line-height: 1.5;">Thank you for signing up. Please click the button below to verify your email address and activate your account.</p>
             <div style="margin: 24px 0;">
-              <a href="${process.env.FRONTEND_URL}/verify-email/${token}"
+              <a href="${process.env.FRONTEND_URL}/verify/${token}"
                  style="background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 500; display: inline-block;">
                 Verify Email Address
               </a>
