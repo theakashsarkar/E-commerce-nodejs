@@ -2,6 +2,7 @@ import express from "express";
 import "dotenv/config";
 import connectDB from "./database/db.js";
 import userRoute from "./routes/userRoute.js";
+import categoryRoute from "./routes/categoryRoutes.js";
 import cors from "cors";
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(
   }),
 );
 app.use("/api/v1/user", userRoute);
+app.use("/api/v1/categories", categoryRoute);
 app.listen(PORT, async () => {
   connectDB();
   console.log(`Server is running on port ${PORT}`);
