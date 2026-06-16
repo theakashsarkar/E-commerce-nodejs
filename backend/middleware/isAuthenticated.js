@@ -1,55 +1,56 @@
 import User from "../models/userModel.js";
 import jwt from "jsonwebtoken";
+import { sendResponse } from "../utils/sendResponse.js";
 export const isAuthenticated = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(400).json({
-        success: false,
-        message: "Autherization token is misssing or invalid",
-      });
+      return sendResponse(
+        res,
+        401,
+        false,
+        "Autherization token is misssing or invalid",
+      );
     }
     const token = authHeader.split(" ")[1];
-    let decode;
-    try {
-      decode = jwt.verify(token, process.env.SECRET_KEY);
-    } catch (error) {
-      if (error.name === "TokenExpiredError") {
-        return res.statrus(400).json({
-          success: false,
-          message: "The registration token has expired",
-        });
-      }
-      return res.status(400).json({
-        successs: false,
-        message: "access token is missing or invalid",
-      });
-    }
-    const searchId = decode.id || decode._id;
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    const searchId = decoded.id || decoded._id;
+
     if (!searchId) {
-      return res
-        .status(401)
-        .json({ success: false, message: "Malformed token payload structure" });
+      return sendResponse(res, 401, false, "Malformed token payload structure");
     }
-    const user = await User.findById(decode.id);
+
+    const user = await User.findById(searchId);
     if (!user) {
-      return res.status(400).json({
-        success: false,
-        message: "User Not found",
-      });
+      return sendResponse(res, 401, false, "User Not Found");
     }
     req.user = user;
     req.id = user._id;
     next();
-  } catch (error) {}
+  } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      return sendResponse(
+        res,
+        401,
+        false,
+        "The registration token has expired",
+      );
+    }
+    if (error.name === "JsonWebTokenError") {
+      return sendResponse(
+        res,
+        401,
+        false,
+        "Access token is missing or invalid",
+      );
+    }
+    return sendResponse(res, 500, false, error.message);
+  }
 };
 
 export const isAdmin = (req, res, next) => {
   if (req.user && req.user.role === "admin") {
-    next();
-  } else {
-    return res.status(200).json({
-      message: "Access denied: admins only",
-    });
+    return next();
   }
+  return sendResponse(res, 403, false, "Access denied: admins only");
 };
